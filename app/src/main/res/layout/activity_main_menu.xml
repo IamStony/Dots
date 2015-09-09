@@ -1,0 +1,38 @@
+<!-- MAIN MENU ACTIVITY -->
+<RelativeLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+
+    tools:context=".MainMenuActivity">
+
+    <TextView
+        android:text="@string/game_name"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignParentTop="true"
+        android:layout_centerHorizontal="true"
+        android:textSize="50sp"
+        android:onClick="game_play"
+        android:id="@+id/textGame" />
+
+    <Button
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="@string/game_play"
+        android:onClick="game_play"
+        android:id="@+id/buttonPlay"
+        android:layout_centerVertical="true"
+        android:layout_alignEnd="@+id/textGame" />
+
+    <Button
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="@string/game_settings"
+        android:onClick="game_settings"
+        android:id="@+id/buttonSettings"
+        android:layout_below="@+id/buttonPlay"
+        android:layout_alignStart="@+id/buttonPlay" />
+
+</RelativeLayout>

@@ -1,0 +1,7 @@
+<resources>
+    <string name="game_name">Dots</string>
+    <string name="game_play">Play</string>
+    <string name="game_settings">Settings</string>
+    <string name="settings_vibration">Vibrations</string>
+    <string name="settings_gridSize">Grid Size</string>
+</resources>

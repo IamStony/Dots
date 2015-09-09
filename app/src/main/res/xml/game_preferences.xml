@@ -1,0 +1,15 @@
+<?xml version="1.0" encoding="utf-8"?>
+<PreferenceScreen xmlns:android="http://schemas.android.com/apk/res/android">
+    <CheckBoxPreference
+        android:title="@string/settings_vibration"
+        android:defaultValue="false"
+        android:summary="Vibrate on interaction"
+        android:key="vibrations" />
+    <ListPreference
+        android:title="@string/settings_gridSize"
+        android:summary="Size of the grid: %s"
+        android:key="gridSize"
+        android:defaultValue="6"
+        android:entries="@array/gridArray"
+        android:entryValues="@array/gridValues" />
+</PreferenceScreen>
