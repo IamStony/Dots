@@ -27,7 +27,7 @@ public class Game extends View {
     private int NUM_CELLS, m_cellWidth, m_cellHeight;
 
     ArrayList<Dot> m_dots;
-    List<Point> m_dotPath = new ArrayList<Point>();
+    List<Point> m_dotPath;
 
     public Game(Context context, AttributeSet attributeSet) {
         /**Initializing*/
@@ -39,6 +39,7 @@ public class Game extends View {
         m_path = new Path();
         m_paintPath = new Paint();
         m_dots = new ArrayList<>();
+        m_dotPath = new ArrayList<>();
 
         /**Getting values and configuring settings*/
         NUM_CELLS = Integer.parseInt(m_sp.getString("gridSize", "6"));
@@ -161,10 +162,10 @@ public class Game extends View {
             int squareY = y / m_cellHeight;
             System.out.println("X: " + x + "     ->     X: " + squareX);
             System.out.println("Y: " + y + "     ->     Y: " + squareY);
-            if(x < 0) { x = 0; }
-            if(x >= NUM_CELLS) { x = NUM_CELLS - 1; }
-            if(y < 0) { y = 0; }
-            if(y >= NUM_CELLS) { y = NUM_CELLS - 1; }
+            if(squareX < 0) { squareX = 0; }
+            if(squareX >= NUM_CELLS - 1) { squareX = NUM_CELLS - 1; }
+            if(squareY < 0) { squareY = 0; }
+            if(squareY >= NUM_CELLS - 1) { squareY = NUM_CELLS - 1; }
             Point point = new Point(squareX, squareY);
             if(!m_dotPath.contains(point)) {
                 //TODO Get color and compare
