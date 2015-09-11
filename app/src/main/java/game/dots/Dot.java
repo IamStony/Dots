@@ -8,7 +8,7 @@ import java.util.Random;
 
 public class Dot {
     public int x, y;
-    public String color;
+    public int color;
     public Paint dotPaint;
     public RectF circle;
 
@@ -17,33 +17,40 @@ public class Dot {
         this.y = y;
         circle = new RectF();
         dotPaint = new Paint();
-        dotPaint.setColor(Color.parseColor(getColor(this)));
+        getColor(this);
+        dotPaint.setColor(this.color);
         dotPaint.setStyle(Paint.Style.FILL_AND_STROKE);
         dotPaint.setAntiAlias(true);
     }
 
-    static private String getColor(Dot dot) {
+    static private void getColor(Dot dot) {
         Random random = new Random();
         int randomColor = random.nextInt(5);
         switch (randomColor){
             case 0:
-                dot.color = "WHITE";
-                return "WHITE";
+                dot.color = Color.WHITE;
+                break;
             case 1:
-                dot.color = "CYAN";
-                return "CYAN";
+                dot.color = Color.CYAN;
+                break;
             case 2:
-                dot.color = "GRAY";
-                return "GRAY";
+                dot.color = Color.GRAY;
+                break;
             case 3:
-                dot.color = "RED";
-                return "RED";
+                dot.color = Color.RED;
+                break;
             case 4:
-                dot.color = "GREEN";
-                return "GREEN";
+                dot.color = Color.GREEN;
+                break;
             default:
-                dot.color = "WHITE";
-                return "WHITE";
+                dot.color = Color.WHITE;
+                break;
         }
+    }
+
+    public boolean adjacent(Dot lastDot) {
+        int dx = Math.abs(this.x - lastDot.x);
+        int dy = Math.abs(this.y - lastDot.y);
+        return (dx + dy == 1);
     }
 }

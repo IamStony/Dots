@@ -49,7 +49,7 @@ public class Game extends View {
         m_paint.setStrokeWidth(2);
         m_paint.setAntiAlias(true);
 
-        m_paintPath.setColor(Color.BLACK);
+        //m_paintPath.setColor(Color.BLACK);
         m_paintPath.setStrokeWidth(10);
         m_paintPath.setStrokeJoin(Paint.Join.ROUND);
         m_paintPath.setStrokeCap(Paint.Cap.ROUND);
@@ -76,6 +76,16 @@ public class Game extends View {
     }
     private int yToRow( int y ) {
         return (y - getPaddingTop()) / m_cellHeight;
+    }
+
+    private int squareN(int n) {
+        int square = n / m_cellHeight;
+        if(square < 0) square = 0;
+        if(square >= NUM_CELLS - 1) square = NUM_CELLS - 1;
+        return square;
+    }
+    private Dot getDot(int squareX, int squareY) {
+        return m_dots.get((NUM_CELLS * squareY) + squareX);
     }
 
     @Override
@@ -113,12 +123,6 @@ public class Game extends View {
             }
         }
 
-        /**Draw the dots*/
-        for(int i = 0; i < m_dots.size(); i++) {
-            Dot current = m_dots.get(i);
-            canvas.drawOval(current.circle, current.dotPaint);
-        }
-
         /**Draw the connection*/
         if(!m_dotPath.isEmpty()) {
             m_path.reset();
@@ -130,48 +134,49 @@ public class Game extends View {
             }
             canvas.drawPath(m_path, m_paintPath);
         }
+
+        /**Draw the dots*/
+        for(int i = 0; i < m_dots.size(); i++) {
+            Dot current = m_dots.get(i);
+            canvas.drawOval(current.circle, current.dotPaint);
+        }
     }
 
     @Override
     public boolean onTouchEvent(@NonNull MotionEvent event) {
         int x = (int) event.getX();
         int y = (int) event.getY();
-        /*if(x < 0) { x = 0; }
-        if(x > (NUM_CELLS * m_cellWidth) ) { x = NUM_CELLS * m_cellWidth - 10; }
-        if(y < 0) { y = 0; }
-        if(y > (NUM_CELLS * m_cellHeight) ) { y = NUM_CELLS * m_cellHeight - 10; }*/
-
-        //System.out.println("cWidth: " + m_cellWidth);
-        //System.out.println("cHeight: " + m_cellHeight);
-
-        /*int xMax = getPaddingLeft() + m_cellWidth * NUM_CELLS;
-        int yMax = getPaddingTop() + m_cellHeight * NUM_CELLS;
-        x = Math.max( getPaddingLeft(), Math.min( x, (int) (xMax - m_circle.width())));
-        y = Math.max( getPaddingTop(), Math.min( y, (int) (yMax - m_circle.height())));*/
+        int squareX = squareN(x);
+        int squareY = squareN(y);
+        //System.out.println("X: " + x + "     ->     X: " + squareX);
+        //System.out.println("Y: " + y + "     ->     Y: " + squareY);
+        Dot current = getDot(squareX, squareY);
 
         if (event.getAction() == MotionEvent.ACTION_DOWN) {
-            int squareX = x / m_cellWidth;
-            int squareY = y / m_cellHeight;
-            System.out.println("X: " + x + "     ->     X: " + squareX);
-            System.out.println("Y: " + y + "     ->     Y: " + squareY);
             m_dotPath.add(new Point(squareX, squareY));
+            m_paintPath.setColor(current.color);
             moving = true;
         }
         else if (event.getAction() == MotionEvent.ACTION_MOVE && moving) {
-            int squareX = x / m_cellWidth;
-            int squareY = y / m_cellHeight;
-            System.out.println("X: " + x + "     ->     X: " + squareX);
-            System.out.println("Y: " + y + "     ->     Y: " + squareY);
-            if(squareX < 0) { squareX = 0; }
-            if(squareX >= NUM_CELLS - 1) { squareX = NUM_CELLS - 1; }
-            if(squareY < 0) { squareY = 0; }
-            if(squareY >= NUM_CELLS - 1) { squareY = NUM_CELLS - 1; }
-            Point point = new Point(squareX, squareY);
-            if(!m_dotPath.contains(point)) {
-                //TODO Get color and compare
-                m_dotPath.add(point);
-                invalidate(); //To draw the line
+            Point currentPoint = new Point(squareX, squareY);
+            if(!m_dotPath.contains(currentPoint)) {
+                Point lastPoint = m_dotPath.get(m_dotPath.size() - 1);
+                Dot lastDot = getDot(lastPoint.x, lastPoint.y);
+                if(current.color == lastDot.color) {
+                    if(current.adjacent(lastDot)) {
+                        m_dotPath.add(currentPoint);
+                        invalidate(); //To draw the line
+                    }
+                }
             }
+            else if(m_dotPath.size() > 1) {
+                Point secondLast = m_dotPath.get(m_dotPath.size() - 2);
+                if(secondLast.equals(currentPoint)) {
+                    m_dotPath.remove(m_dotPath.size() - 1);
+                    invalidate();
+                }
+            }
+
         }
         else if (event.getAction() == MotionEvent.ACTION_UP) {
             m_dotPath.clear();
@@ -180,6 +185,4 @@ public class Game extends View {
         }
         return true;
     }
-
-
 }
