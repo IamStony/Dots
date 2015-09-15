@@ -4,7 +4,7 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-
+    android:orientation="horizontal"
     tools:context=".MainMenuActivity"
     >
 
@@ -41,5 +41,25 @@
                 android:id="@+id/buttonSettings"/>
         </TableRow>
 
+        <View
+            android:layout_width="1dp"
+            android:layout_height="1dp"
+            android:background="#FFFFFF" />
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="#1 Steinar - 1337"
+            android:paddingTop="20sp"/>
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="#2 Kristinn - 0"
+            android:paddingTop="20sp"/>
+
     </TableLayout>
+
+
+
+
 </LinearLayout>

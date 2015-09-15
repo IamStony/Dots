@@ -17,13 +17,13 @@ public class Dot {
         this.y = y;
         circle = new RectF();
         dotPaint = new Paint();
-        getColor(this);
+        setColor(this);
         dotPaint.setColor(this.color);
         dotPaint.setStyle(Paint.Style.FILL_AND_STROKE);
         dotPaint.setAntiAlias(true);
     }
 
-    static private void getColor(Dot dot) {
+    static private void setColor(Dot dot) {
         Random random = new Random();
         int randomColor = random.nextInt(5);
         switch (randomColor){
@@ -53,4 +53,16 @@ public class Dot {
         int dy = Math.abs(this.y - lastDot.y);
         return (dx + dy == 1);
     }
+
+    public void changeColor() {
+        setColor(this);
+        dotPaint.setColor(this.color);
+    }
+
+    public void changeColor(int color) {
+        this.color = color;
+        dotPaint.setColor(this.color);
+    }
+
+
 }
