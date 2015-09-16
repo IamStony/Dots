@@ -18,10 +18,12 @@ import android.util.AttributeSet;
 import android.view.MotionEvent;
 import android.view.View;
 import android.view.animation.AccelerateDecelerateInterpolator;
+import android.view.animation.Animation;
 
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Comparator;
+import java.util.LinkedList;
 import java.util.List;
 import java.util.Timer;
 
@@ -74,9 +76,8 @@ public class Game extends View {
                 dot.circle.set(x, y, m_cellWidth + x, m_cellHeight + y);
                 dot.circle.offset(getPaddingLeft(), getPaddingTop());
                 dot.circle.inset(m_cellWidth * 0.2f, m_cellHeight * 0.2f);
-                dot.circle2.set(x, y, m_cellWidth + x, m_cellHeight + y);   //Probably not needed
-                dot.circle2.offset(getPaddingLeft(), getPaddingTop());      //Probably not needed
-                dot.circle2.inset(m_cellWidth * 0.2f, m_cellHeight * 0.2f); //Probably not needed
+                dot.cX = x;
+                dot.cY = y;
                 m_dots.add(dot);
             }
         }
@@ -161,6 +162,8 @@ public class Game extends View {
             m_dotPath.add(new Point(squareX, squareY));
             m_paintPath.setColor(current.color);
             moving = true;
+            animations.clear();
+            animatorSet.end();
         }
         else if (event.getAction() == MotionEvent.ACTION_MOVE && moving) {
             Point currentPoint = new Point(squareX, squareY);
@@ -196,7 +199,8 @@ public class Game extends View {
 
     private void moveDots() {
         Point currentPoint;
-        Dot currentDot;
+        Dot currentDot = null;
+        final Dot lastDot;
         int swap;
         int pathSize = m_dotPath.size();
 
@@ -210,56 +214,79 @@ public class Game extends View {
 
         //Mirroring dots (putting them above the canvas in a mirror image)
         //current.x og current
+
+        findViewById(R.id.myCoolGame).clearAnimation();
+        animatorSet.removeAllListeners();
+        animatorSet.end();
+        animatorSet.cancel();
+        animations.clear();
         for(int i = 0; i < pathSize; i++) {
             currentPoint = m_dotPath.get(i);
             int x = currentPoint.x;
             int y = currentPoint.y;
             currentDot = getDot(x, y);
-            System.out.println("currentDot position: " + ((NUM_CELLS * y) + x));
+            //System.out.println("currentDot position: " + ((NUM_CELLS * y) + x));
 
             while(y-- > 0) {
                 Dot temp = getDot(x, y);
-                System.out.println("tempDot position: " + ((NUM_CELLS * y) + x));
+                //System.out.println("tempDot position: " + ((NUM_CELLS * y) + x));
 
-                animateMove(temp, currentDot);
-
-                System.out.println("Size: " + animations.size());
-
-
+                //animateMove(temp, currentDot);
                 //Swapping the color upwards
-                //swap = currentDot.color;
-                //currentDot.changeColor(temp.color);
-                //temp.changeColor(swap);
+                /**swap = currentDot.color;
+                currentDot.changeColor(temp.color);
+                temp.changeColor(swap);*/
 
+                //System.out.println("Size: " + animations.size());
 
                 currentDot = temp;
             }
 
-            animatorSet.playTogether(animations);
-            animations.clear();
-            animatorSet.start();
 
-            System.out.println("SizeAfterClear: " + animations.size());
-
-
-            currentDot.changeColor();
+            //currentDot.changeColor();
         }
+        lastDot = currentDot;
+        animatorSet.playTogether(animations);
+        animatorSet.setDuration(1500);
+        animatorSet.start();
+        animatorSet.addListener(new Animator.AnimatorListener() {
+            @Override
+            public void onAnimationStart(Animator animator) {
+                System.out.println("Starting animation");
+            }
+
+            @Override
+            public void onAnimationEnd(Animator animation) {
+                System.out.println("hello");
+                lastDot.changeColor();
+            }
+
+            @Override
+            public void onAnimationCancel(Animator animator) {
+                //skip
+            }
+
+            @Override
+            public void onAnimationRepeat(Animator animator) {
+                System.out.println("Repeating animation");
+            }
+        });
+        //System.out.println("SizeAfterClear: " + animations.size());
 
     }
 
-    ArrayList<Animator> animations = new ArrayList<>();
+    static List<Animator> animations = new LinkedList<>();
 
-    AnimatorSet animatorSet = new AnimatorSet();
-
+    static AnimatorSet animatorSet = new AnimatorSet();
 
 
     public void animateMove(final Dot from, final Dot to) {
         System.out.println("Animation?");
         final float topFrom = from.circle.top;
         final float topTo = to.circle.top;
-        ValueAnimator animator = new ValueAnimator();
+        final ValueAnimator animator = new ValueAnimator();
         animator.removeAllUpdateListeners();
-        animator.setDuration(500);
+        //animator.setDuration(500);
         animator.setFloatValues(0.0f, 1.0f);
         animator.setInterpolator(new AccelerateDecelerateInterpolator());
         animator.addUpdateListener(new ValueAnimator.AnimatorUpdateListener() {
@@ -274,13 +301,17 @@ public class Game extends View {
         animator.addListener(new AnimatorListenerAdapter() {
             @Override
             public void onAnimationEnd(Animator animation) {
-                from.circle = from.circle2;
-                from.x = from.x2;
-                from.y = from.y2;
+                int x = from.cX;
+                int y = from.cY;
+                from.circle.set(x, y, m_cellWidth + x, m_cellHeight + y);
+                from.circle.offset(getPaddingLeft(), getPaddingTop());
+                from.circle.inset(m_cellWidth * 0.2f, m_cellHeight * 0.2f);
+
                 int col = from.color;
                 from.changeColor(to.color);
                 to.changeColor(col);
                 from.circle.offsetTo(from.circle.left, from.circle.top);
+
             }
         });
         animations.add(animator);

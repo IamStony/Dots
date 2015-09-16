@@ -11,6 +11,7 @@ public class Dot {
     public int color;
     public Paint dotPaint;
     public RectF circle, circle2; //circle2 is a copy I'm using to revert animations
+    int cX, cY;
 
     public Dot(int x, int y) {
         this.x = this.x2 = x; //testing x2
