@@ -8,7 +8,6 @@
     android:gravity="center">
 
     <game.dots.Game
-        android:id="@+id/myCoolGame"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content" />
 

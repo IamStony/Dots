@@ -18,14 +18,12 @@ import android.util.AttributeSet;
 import android.view.MotionEvent;
 import android.view.View;
 import android.view.animation.AccelerateDecelerateInterpolator;
-import android.view.animation.Animation;
 
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Comparator;
 import java.util.LinkedList;
 import java.util.List;
-import java.util.Timer;
 
 public class Game extends View {
     SharedPreferences m_sp;
@@ -59,7 +57,6 @@ public class Game extends View {
         m_paint.setStrokeWidth(2);
         m_paint.setAntiAlias(true);
 
-        //m_paintPath.setColor(Color.BLACK);
         m_paintPath.setStrokeWidth(10);
         m_paintPath.setStrokeJoin(Paint.Join.ROUND);
         m_paintPath.setStrokeCap(Paint.Cap.ROUND);
@@ -118,7 +115,7 @@ public class Game extends View {
         if(m_dots.isEmpty()) {
             createDots();
         }
-        /**Draw the grid, used while coding, remove once finished*/
+        /**Draw the grid*/
         for (int row = 0; row < NUM_CELLS; row++) {
             for (int col = 0; col < NUM_CELLS; col++) {
                 int x = col * m_cellWidth;
@@ -163,7 +160,7 @@ public class Game extends View {
             m_paintPath.setColor(current.color);
             moving = true;
             animations.clear();
-            animatorSet.end();
+            animatorSet = new AnimatorSet();
         }
         else if (event.getAction() == MotionEvent.ACTION_MOVE && moving) {
             Point currentPoint = new Point(squareX, squareY);
@@ -187,7 +184,7 @@ public class Game extends View {
 
         }
         else if (event.getAction() == MotionEvent.ACTION_UP) {
-            if(m_dotPath.size() > 0) { //Should be > 1, just 0 for testing purposes
+            if(m_dotPath.size() > 1) {
                 moveDots();
             }
             m_dotPath.clear();
@@ -201,7 +198,6 @@ public class Game extends View {
         Point currentPoint;
         Dot currentDot = null;
         final Dot lastDot;
-        int swap;
         int pathSize = m_dotPath.size();
 
         //Sorting the path so we always start at the highest
@@ -212,42 +208,24 @@ public class Game extends View {
             }
         });
 
-        //Mirroring dots (putting them above the canvas in a mirror image)
-        //current.x og current
-
-        findViewById(R.id.myCoolGame).clearAnimation();
-        animatorSet.removeAllListeners();
-        animatorSet.end();
-        animatorSet.cancel();
-        animations.clear();
         for(int i = 0; i < pathSize; i++) {
             currentPoint = m_dotPath.get(i);
             int x = currentPoint.x;
             int y = currentPoint.y;
             currentDot = getDot(x, y);
-            //System.out.println("currentDot position: " + ((NUM_CELLS * y) + x));
 
             while(y-- > 0) {
                 Dot temp = getDot(x, y);
-                //System.out.println("tempDot position: " + ((NUM_CELLS * y) + x));
 
-                //animateMove(temp, currentDot);
-                //Swapping the color upwards
-                /**swap = currentDot.color;
-                currentDot.changeColor(temp.color);
-                temp.changeColor(swap);*/
-
-                //System.out.println("Size: " + animations.size());
+                animateMove(temp, currentDot);
 
                 currentDot = temp;
             }
-
-
-            //currentDot.changeColor();
         }
         lastDot = currentDot;
-        animatorSet.playTogether(animations);
-        animatorSet.setDuration(1500);
+
+        animatorSet.playSequentially(animations);
+        animatorSet.setDuration(2000);
         animatorSet.start();
         animatorSet.addListener(new Animator.AnimatorListener() {
             @Override
@@ -258,6 +236,7 @@ public class Game extends View {
             @Override
             public void onAnimationEnd(Animator animation) {
                 System.out.println("hello");
+                assert lastDot != null;
                 lastDot.changeColor();
             }
 
@@ -271,8 +250,6 @@ public class Game extends View {
                 System.out.println("Repeating animation");
             }
         });
-        //System.out.println("SizeAfterClear: " + animations.size());
-
     }
 
     static List<Animator> animations = new LinkedList<>();
@@ -281,12 +258,10 @@ public class Game extends View {
 
 
     public void animateMove(final Dot from, final Dot to) {
-        System.out.println("Animation?");
         final float topFrom = from.circle.top;
         final float topTo = to.circle.top;
         final ValueAnimator animator = new ValueAnimator();
         animator.removeAllUpdateListeners();
-        //animator.setDuration(500);
         animator.setFloatValues(0.0f, 1.0f);
         animator.setInterpolator(new AccelerateDecelerateInterpolator());
         animator.addUpdateListener(new ValueAnimator.AnimatorUpdateListener() {
