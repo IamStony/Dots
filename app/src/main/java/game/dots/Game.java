@@ -208,6 +208,7 @@ public class Game extends View {
             }
         });
 
+        Dot temp;
         for(int i = 0; i < pathSize; i++) {
             currentPoint = m_dotPath.get(i);
             int x = currentPoint.x;
@@ -215,17 +216,20 @@ public class Game extends View {
             currentDot = getDot(x, y);
 
             while(y-- > 0) {
-                Dot temp = getDot(x, y);
+                temp = getDot(x, y);
 
                 animateMove(temp, currentDot);
 
                 currentDot = temp;
             }
+
+            temp = new Dot(currentDot.x, -1);
+            animateMove(temp, currentDot);
         }
         lastDot = currentDot;
 
-        animatorSet.playSequentially(animations);
-        animatorSet.setDuration(2000);
+        animatorSet.playTogether(animations);
+        animatorSet.setDuration(200);
         animatorSet.start();
         animatorSet.addListener(new Animator.AnimatorListener() {
             @Override
@@ -258,8 +262,10 @@ public class Game extends View {
 
 
     public void animateMove(final Dot from, final Dot to) {
+
         final float topFrom = from.circle.top;
         final float topTo = to.circle.top;
+        //System.out.println("->topFrom: " + topFrom + "\n->topTo: " + topTo + "- - - - - - - -");
         final ValueAnimator animator = new ValueAnimator();
         animator.removeAllUpdateListeners();
         animator.setFloatValues(0.0f, 1.0f);
