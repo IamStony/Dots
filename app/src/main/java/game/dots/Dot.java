@@ -7,15 +7,16 @@ import android.graphics.RectF;
 import java.util.Random;
 
 public class Dot {
-    public int x, y;
+    public int x, y, x2, y2; //x2 and y2 are copies I'm using to revert animations
     public int color;
     public Paint dotPaint;
-    public RectF circle;
+    public RectF circle, circle2; //circle2 is a copy I'm using to revert animations
 
     public Dot(int x, int y) {
-        this.x = x;
-        this.y = y;
+        this.x = this.x2 = x; //testing x2
+        this.y = this.y2 = y; //testing y2
         circle = new RectF();
+        circle2 = new RectF(); //testing
         dotPaint = new Paint();
         setColor(this);
         dotPaint.setColor(this.color);

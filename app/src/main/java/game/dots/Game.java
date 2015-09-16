@@ -1,8 +1,8 @@
 package game.dots;
 
+import android.animation.Animator;
+import android.animation.AnimatorListenerAdapter;
 import android.animation.AnimatorSet;
-import android.animation.ObjectAnimator;
-import android.animation.TypeEvaluator;
 import android.animation.ValueAnimator;
 import android.content.Context;
 import android.content.SharedPreferences;
@@ -17,15 +17,13 @@ import android.support.annotation.NonNull;
 import android.util.AttributeSet;
 import android.view.MotionEvent;
 import android.view.View;
-import android.view.animation.AnimationSet;
-import android.view.animation.ScaleAnimation;
-import android.view.animation.TranslateAnimation;
+import android.view.animation.AccelerateDecelerateInterpolator;
 
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Comparator;
 import java.util.List;
-import java.util.Queue;
+import java.util.Timer;
 
 public class Game extends View {
     SharedPreferences m_sp;
@@ -76,12 +74,15 @@ public class Game extends View {
                 dot.circle.set(x, y, m_cellWidth + x, m_cellHeight + y);
                 dot.circle.offset(getPaddingLeft(), getPaddingTop());
                 dot.circle.inset(m_cellWidth * 0.2f, m_cellHeight * 0.2f);
+                dot.circle2.set(x, y, m_cellWidth + x, m_cellHeight + y);   //Probably not needed
+                dot.circle2.offset(getPaddingLeft(), getPaddingTop());      //Probably not needed
+                dot.circle2.inset(m_cellWidth * 0.2f, m_cellHeight * 0.2f); //Probably not needed
                 m_dots.add(dot);
             }
         }
     }
 
-    private int squareN(int n) {
+    private int squareN(int n) { //Virkar fyrir bæði x og y hnit
         int square = n / m_cellHeight; //m_cellHeight == m_cellWidth
         if(square < 0) square = 0;
         if(square >= NUM_CELLS - 1) square = NUM_CELLS - 1;
@@ -183,7 +184,7 @@ public class Game extends View {
 
         }
         else if (event.getAction() == MotionEvent.ACTION_UP) {
-            if(m_dotPath.size() > 1) {
+            if(m_dotPath.size() > 0) { //Should be > 1, just 0 for testing purposes
                 moveDots();
             }
             m_dotPath.clear();
@@ -214,46 +215,75 @@ public class Game extends View {
             int x = currentPoint.x;
             int y = currentPoint.y;
             currentDot = getDot(x, y);
+            System.out.println("currentDot position: " + ((NUM_CELLS * y) + x));
 
             while(y-- > 0) {
                 Dot temp = getDot(x, y);
-
-                //Swapping the color upwards
-                swap = currentDot.color;
-                currentDot.changeColor(temp.color);
-                temp.changeColor(swap);
+                System.out.println("tempDot position: " + ((NUM_CELLS * y) + x));
 
                 animateMove(temp, currentDot);
+
+                System.out.println("Size: " + animations.size());
+
+
+                //Swapping the color upwards
+                //swap = currentDot.color;
+                //currentDot.changeColor(temp.color);
+                //temp.changeColor(swap);
+
 
                 currentDot = temp;
             }
 
+            animatorSet.playTogether(animations);
+            animations.clear();
+            animatorSet.start();
+
+            System.out.println("SizeAfterClear: " + animations.size());
+
+
             currentDot.changeColor();
         }
+
     }
 
-    public void animateMove(Dot from, Dot to) {
+    ArrayList<Animator> animations = new ArrayList<>();
+
+    AnimatorSet animatorSet = new AnimatorSet();
+
+
+
+    public void animateMove(final Dot from, final Dot to) {
         System.out.println("Animation?");
-        //from.animate().x(to.x).y(to.y);
-
-        /*AnimatorSet anims = new AnimatorSet();
-        ValueAnimator values = new ValueAnimator();
-        values.ofObject()
-        //values.setObjectValues(from.x, from.y, to.x, to.y);
-        anims.playSequentially(
-
-                ObjectAnimator.ofObject(TypeEvaluator(from), values);
-        );
-        anims.setDuration(500);
-        anims.start();*/
-
-        /*AnimatorSet as = new AnimatorSet();
-        as.playSequentially(ObjectAnimator.ofFloat(...), // anim 1
-        ObjectAnimator.ofInt(), // anim 2
-        ObjectAnimator.ofFloat(...), // anim 3
-        ObjectAnimator.ofFloat(...)); // anim 4
-        as.setDuration(600);
-        as.start();*/
+        final float topFrom = from.circle.top;
+        final float topTo = to.circle.top;
+        ValueAnimator animator = new ValueAnimator();
+        animator.removeAllUpdateListeners();
+        animator.setDuration(500);
+        animator.setFloatValues(0.0f, 1.0f);
+        animator.setInterpolator(new AccelerateDecelerateInterpolator());
+        animator.addUpdateListener(new ValueAnimator.AnimatorUpdateListener() {
+            @Override
+            public void onAnimationUpdate(ValueAnimator animation) {
+                float ratio = (float) animation.getAnimatedValue();
+                int y = (int) ((1.0 - ratio) * topFrom + ratio * topTo);
+                from.circle.offsetTo(from.circle.left, y);
+                invalidate();
+            }
+        });
+        animator.addListener(new AnimatorListenerAdapter() {
+            @Override
+            public void onAnimationEnd(Animator animation) {
+                from.circle = from.circle2;
+                from.x = from.x2;
+                from.y = from.y2;
+                int col = from.color;
+                from.changeColor(to.color);
+                to.changeColor(col);
+                from.circle.offsetTo(from.circle.left, from.circle.top);
+            }
+        });
+        animations.add(animator);
     }
 
 }
