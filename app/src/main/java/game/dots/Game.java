@@ -43,6 +43,7 @@ public class Game extends View {
     ArrayList<Dot> m_dots;
     List<Point> m_dotPath;
     SharedPreferences m_sp;
+    TextView m_scoreView;
 
     public Game(Context context, AttributeSet attributeSet) {
         /**Initializing*/
@@ -75,6 +76,7 @@ public class Game extends View {
         m_vibrator = (Vibrator) context.getSystemService(Context.VIBRATOR_SERVICE);
         m_vibrate = m_sp.getBoolean("vibrations", false);
         m_sound = m_sp.getBoolean("sounds", false);
+        m_score = 0;
 
     }
 
@@ -199,6 +201,7 @@ public class Game extends View {
         }
         else if (event.getAction() == MotionEvent.ACTION_UP) {
             if(m_dotPath.size() > 1) {
+                setScore(m_dotPath.size());
                 moveDots();
                 if(m_vibrate) {
                     System.out.println("Vibrate bzzzz");
