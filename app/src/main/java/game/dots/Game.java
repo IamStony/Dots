@@ -13,6 +13,7 @@ import android.graphics.Path;
 import android.graphics.Point;
 import android.graphics.Rect;
 import android.os.Bundle;
+import android.os.Vibrator;
 import android.preference.PreferenceManager;
 import android.support.annotation.NonNull;
 import android.util.AttributeSet;
@@ -30,17 +31,20 @@ import java.util.LinkedList;
 import java.util.List;
 
 public class Game extends View {
-    SharedPreferences m_sp;
     boolean moving;
     private Rect m_rect;
     private Paint m_paint;
     private Path m_path;
     private Paint m_paintPath;
     private int NUM_CELLS, m_cellWidth, m_cellHeight;
-    int score;
-    TextView scoreview;
+    private int m_score;
+    private Vibrator vibrator;
+    private boolean vibrate;
+    private boolean sound;
+    TextView m_scoreview;
     ArrayList<Dot> m_dots;
     List<Point> m_dotPath;
+    SharedPreferences m_sp;
 
     public Game(Context context, AttributeSet attributeSet) {
         /**Initializing*/
@@ -67,8 +71,12 @@ public class Game extends View {
         m_paintPath.setStrokeCap(Paint.Cap.ROUND);
         m_paintPath.setStyle(Paint.Style.STROKE);
         m_paintPath.setAntiAlias(true);
-        View v = (View) getParent();
-        scoreview = (TextView) v.findViewById(R.id.score);
+
+
+        m_sp = PreferenceManager.getDefaultSharedPreferences(getContext());
+        vibrator = (Vibrator) context.getSystemService(Context.VIBRATOR_SERVICE);
+        vibrate = m_sp.getBoolean("vibrations", false);
+        sound = m_sp.getBoolean("sounds", false);
     }
 
     private void createDots() {
@@ -194,6 +202,16 @@ public class Game extends View {
             if(m_dotPath.size() > 1) {
                 setScore(m_dotPath.size());
                 moveDots();
+                if(vibrate)
+                {
+                    System.out.println("Vibrate bzzzz");
+                    //vibrator.vibrate(500);
+                }
+                if(sound)
+                {
+                    System.out.println("Sound beepboop");
+                    //here we play sound
+                }
             }
             m_dotPath.clear();
             moving = false;
@@ -203,8 +221,10 @@ public class Game extends View {
     }
     public void setScore(int i)
     {
-        score += i;
-        scoreview.setText("Score: " + Integer.toString(score));
+        View v = (View) getParent();
+        m_scoreview = (TextView) v.findViewById(R.id.score);
+        m_score += i;
+        m_scoreview.setText("Score: " + Integer.toString(m_score));
     }
 
     private void moveDots() {
@@ -212,6 +232,9 @@ public class Game extends View {
         Dot currentDot = null;
         final Dot lastDot;
         int pathSize = m_dotPath.size();
+
+
+        
 
         //Sorting the path so we always start at the highest
         //y-line where a dot is positioned
