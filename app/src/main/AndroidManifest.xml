@@ -2,13 +2,13 @@
 <manifest
     xmlns:android="http://schemas.android.com/apk/res/android"
     package="game.dots" >
-
+    <uses-permission android:name="android.permission.VIBRATE"/>
     <application
         android:allowBackup="true"
         android:icon="@mipmap/ic_launcher"
         android:label="@string/game_name"
         android:theme="@android:style/Theme.NoTitleBar.Fullscreen" >
-        <uses-permission android:name="android.permission.VIBRATE"/>
+
         <activity
             android:name=".MainMenuActivity"
             android:label="@string/game_name" >
