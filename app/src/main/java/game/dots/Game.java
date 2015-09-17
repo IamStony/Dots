@@ -12,12 +12,16 @@ import android.graphics.Paint;
 import android.graphics.Path;
 import android.graphics.Point;
 import android.graphics.Rect;
+import android.os.Bundle;
 import android.preference.PreferenceManager;
 import android.support.annotation.NonNull;
 import android.util.AttributeSet;
 import android.view.MotionEvent;
 import android.view.View;
 import android.view.animation.AccelerateDecelerateInterpolator;
+import android.widget.TextView;
+
+import org.w3c.dom.Text;
 
 import java.util.ArrayList;
 import java.util.Collections;
@@ -33,7 +37,8 @@ public class Game extends View {
     private Path m_path;
     private Paint m_paintPath;
     private int NUM_CELLS, m_cellWidth, m_cellHeight;
-
+    int score;
+    TextView scoreview;
     ArrayList<Dot> m_dots;
     List<Point> m_dotPath;
 
@@ -62,6 +67,8 @@ public class Game extends View {
         m_paintPath.setStrokeCap(Paint.Cap.ROUND);
         m_paintPath.setStyle(Paint.Style.STROKE);
         m_paintPath.setAntiAlias(true);
+        View v = (View) getParent();
+        scoreview = (TextView) v.findViewById(R.id.score);
     }
 
     private void createDots() {
@@ -185,6 +192,7 @@ public class Game extends View {
         }
         else if (event.getAction() == MotionEvent.ACTION_UP) {
             if(m_dotPath.size() > 1) {
+                setScore(m_dotPath.size());
                 moveDots();
             }
             m_dotPath.clear();
@@ -192,6 +200,11 @@ public class Game extends View {
             invalidate();
         }
         return true;
+    }
+    public void setScore(int i)
+    {
+        score += i;
+        scoreview.setText("Score: " + Integer.toString(score));
     }
 
     private void moveDots() {
@@ -224,8 +237,8 @@ public class Game extends View {
         }
         lastDot = currentDot;
 
-        animatorSet.playSequentially(animations);
-        animatorSet.setDuration(2000);
+        animatorSet.playTogether(animations);
+        animatorSet.setDuration(200);
         animatorSet.start();
         animatorSet.addListener(new Animator.AnimatorListener() {
             @Override
@@ -235,7 +248,6 @@ public class Game extends View {
 
             @Override
             public void onAnimationEnd(Animator animation) {
-                System.out.println("hello");
                 assert lastDot != null;
                 lastDot.changeColor();
             }
