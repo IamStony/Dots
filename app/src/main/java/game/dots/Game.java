@@ -184,7 +184,7 @@ public class Game extends View {
 
         }
         else if (event.getAction() == MotionEvent.ACTION_UP) {
-            if(m_dotPath.size() > 1) {
+            if(m_dotPath.size() > 0) {
                 moveDots();
             }
             m_dotPath.clear();
@@ -214,6 +214,7 @@ public class Game extends View {
             int x = currentPoint.x;
             int y = currentPoint.y;
             currentDot = getDot(x, y);
+            Dot remember = currentDot;
 
             while(y-- > 0) {
                 temp = getDot(x, y);
@@ -223,8 +224,11 @@ public class Game extends View {
                 currentDot = temp;
             }
 
-            temp = new Dot(currentDot.x, -1);
+            temp = new Dot(currentDot.x, currentDot.y - 1);
+            temp.circle.offsetTo(remember.circle.left, currentDot.circle.top - m_cellHeight);
             animateMove(temp, currentDot);
+
+            //temp.circle.offsetTo(remember.circle.left, currentDot.circle.top);
         }
         lastDot = currentDot;
 
