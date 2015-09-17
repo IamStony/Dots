@@ -12,8 +12,11 @@ import android.graphics.Paint;
 import android.graphics.Path;
 import android.graphics.Point;
 import android.graphics.Rect;
+<<<<<<< HEAD
 import android.os.Bundle;
 import android.os.Vibrator;
+=======
+>>>>>>> ea08f96f8538d711876c3b280b4bb04911676d6c
 import android.preference.PreferenceManager;
 import android.support.annotation.NonNull;
 import android.util.AttributeSet;
@@ -21,8 +24,6 @@ import android.view.MotionEvent;
 import android.view.View;
 import android.view.animation.AccelerateDecelerateInterpolator;
 import android.widget.TextView;
-
-import org.w3c.dom.Text;
 
 import java.util.ArrayList;
 import java.util.Collections;
@@ -73,10 +74,11 @@ public class Game extends View {
         m_paintPath.setAntiAlias(true);
 
 
-        m_sp = PreferenceManager.getDefaultSharedPreferences(getContext());
+
         vibrator = (Vibrator) context.getSystemService(Context.VIBRATOR_SERVICE);
         vibrate = m_sp.getBoolean("vibrations", false);
         sound = m_sp.getBoolean("sounds", false);
+
     }
 
     private void createDots() {
@@ -200,7 +202,6 @@ public class Game extends View {
         }
         else if (event.getAction() == MotionEvent.ACTION_UP) {
             if(m_dotPath.size() > 1) {
-                setScore(m_dotPath.size());
                 moveDots();
                 if(vibrate)
                 {
@@ -219,6 +220,7 @@ public class Game extends View {
         }
         return true;
     }
+
     public void setScore(int i)
     {
         View v = (View) getParent();
@@ -226,6 +228,7 @@ public class Game extends View {
         m_score += i;
         m_scoreview.setText("Score: " + Integer.toString(m_score));
     }
+
 
     private void moveDots() {
         Point currentPoint;
@@ -250,6 +253,7 @@ public class Game extends View {
             int x = currentPoint.x;
             int y = currentPoint.y;
             currentDot = getDot(x, y);
+            Dot remember = currentDot;
 
             while(y-- > 0) {
                 temp = getDot(x, y);
@@ -259,8 +263,11 @@ public class Game extends View {
                 currentDot = temp;
             }
 
-            temp = new Dot(currentDot.x, -1);
+            temp = new Dot(currentDot.x, currentDot.y - 1);
+            temp.circle.offsetTo(remember.circle.left, currentDot.circle.top - m_cellHeight);
             animateMove(temp, currentDot);
+
+            //temp.circle.offsetTo(remember.circle.left, currentDot.circle.top);
         }
         lastDot = currentDot;
 
@@ -275,6 +282,7 @@ public class Game extends View {
 
             @Override
             public void onAnimationEnd(Animator animation) {
+                System.out.println("hello");
                 assert lastDot != null;
                 lastDot.changeColor();
             }
