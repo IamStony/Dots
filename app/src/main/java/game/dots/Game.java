@@ -36,14 +36,14 @@ public class Game extends View {
     private Path m_path;
     private Paint m_paintPath;
     private Vibrator m_vibrator;
+
     private int NUM_CELLS, m_cellWidth, m_cellHeight;
     private int m_score;
 
-    TextView m_scoreview;
+    TextView m_scoreView;
     ArrayList<Dot> m_dots;
     List<Point> m_dotPath;
     SharedPreferences m_sp;
-    TextView m_scoreView;
 
     public Game(Context context, AttributeSet attributeSet) {
         /**Initializing*/
@@ -71,11 +71,11 @@ public class Game extends View {
         m_paintPath.setStyle(Paint.Style.STROKE);
         m_paintPath.setAntiAlias(true);
 
-
-
-        m_vibrator = (Vibrator) context.getSystemService(Context.VIBRATOR_SERVICE);
         m_vibrate = m_sp.getBoolean("vibrations", false);
+        m_vibrator = (Vibrator) context.getSystemService(Context.VIBRATOR_SERVICE);
+
         m_sound = m_sp.getBoolean("sounds", false);
+
         m_score = 0;
 
     }
@@ -205,6 +205,7 @@ public class Game extends View {
                 moveDots();
                 if(m_vibrate) {
                     System.out.println("Vibrate bzzzz");
+                    m_vibrator.vibrate(100);
                     //m_vibrator.vibrate(500);
                 }
                 if(m_sound) {
@@ -222,9 +223,9 @@ public class Game extends View {
     public void setScore(int i)
     {
         View v = (View) getParent();
-        m_scoreview = (TextView) v.findViewById(R.id.score);
+        m_scoreView = (TextView) v.findViewById(R.id.score);
         m_score += i;
-        m_scoreview.setText("Score: " + Integer.toString(m_score));
+        m_scoreView.setText("Score: " + Integer.toString(m_score));
     }
 
 
@@ -233,9 +234,6 @@ public class Game extends View {
         Dot currentDot = null;
         final Dot lastDot;
         int pathSize = m_dotPath.size();
-
-
-        
 
         //Sorting the path so we always start at the highest
         //y-line where a dot is positioned
