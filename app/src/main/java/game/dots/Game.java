@@ -203,15 +203,7 @@ public class Game extends View {
             if(m_dotPath.size() > 1) {
                 setScore(m_dotPath.size());
                 moveDots();
-                if(m_vibrate) {
-                    System.out.println("Vibrate bzzzz");
-                    m_vibrator.vibrate(100);
-                    //m_vibrator.vibrate(500);
-                }
-                if(m_sound) {
-                    System.out.println("Sound beepboop");
-                    //here we play sound
-                }
+                feedback();
             }
             m_dotPath.clear();
             m_moving = false;
@@ -220,8 +212,17 @@ public class Game extends View {
         return true;
     }
 
-    public void setScore(int i)
-    {
+    public void feedback() {
+        if(m_vibrate) {
+            m_vibrator.vibrate(200);
+        }
+        if(m_sound) {
+            System.out.println("Sound beepboop");
+            //here we play sound
+        }
+    }
+
+    public void setScore(int i) {
         View v = (View) getParent();
         m_scoreView = (TextView) v.findViewById(R.id.score);
         m_score += i;
