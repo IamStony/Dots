@@ -184,7 +184,7 @@ public class Game extends View {
 
         }
         else if (event.getAction() == MotionEvent.ACTION_UP) {
-            if(m_dotPath.size() > 0) {
+            if(m_dotPath.size() > 1) {
                 moveDots();
             }
             m_dotPath.clear();
