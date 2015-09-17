@@ -12,6 +12,7 @@ import android.graphics.Paint;
 import android.graphics.Path;
 import android.graphics.Point;
 import android.graphics.Rect;
+import android.media.MediaPlayer;
 import android.os.Vibrator;
 import android.preference.PreferenceManager;
 import android.support.annotation.NonNull;
@@ -45,6 +46,8 @@ public class Game extends View {
     List<Point> m_dotPath;
     SharedPreferences m_sp;
 
+    private MediaPlayer m_mp;
+
     public Game(Context context, AttributeSet attributeSet) {
         /**Initializing*/
         super(context, attributeSet);
@@ -75,7 +78,7 @@ public class Game extends View {
         m_vibrator = (Vibrator) context.getSystemService(Context.VIBRATOR_SERVICE);
 
         m_sound = m_sp.getBoolean("sounds", false);
-
+        m_mp = MediaPlayer.create(getContext(),R.raw.pop);
         m_score = 0;
 
     }
@@ -200,6 +203,10 @@ public class Game extends View {
 
         }
         else if (event.getAction() == MotionEvent.ACTION_UP) {
+            if(m_sound)
+            {
+                m_mp.seekTo(0);
+            }
             if(m_dotPath.size() > 1) {
                 setScore(m_dotPath.size());
                 moveDots();
@@ -219,6 +226,7 @@ public class Game extends View {
         if(m_sound) {
             System.out.println("Sound beepboop");
             //here we play sound
+            m_mp.start();
         }
     }
 
