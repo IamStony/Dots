@@ -12,11 +12,7 @@ import android.graphics.Paint;
 import android.graphics.Path;
 import android.graphics.Point;
 import android.graphics.Rect;
-<<<<<<< HEAD
-import android.os.Bundle;
 import android.os.Vibrator;
-=======
->>>>>>> ea08f96f8538d711876c3b280b4bb04911676d6c
 import android.preference.PreferenceManager;
 import android.support.annotation.NonNull;
 import android.util.AttributeSet;
@@ -32,16 +28,17 @@ import java.util.LinkedList;
 import java.util.List;
 
 public class Game extends View {
-    boolean moving;
+    private boolean m_moving;
+    private boolean m_vibrate;
+    private boolean m_sound;
     private Rect m_rect;
     private Paint m_paint;
     private Path m_path;
     private Paint m_paintPath;
+    private Vibrator m_vibrator;
     private int NUM_CELLS, m_cellWidth, m_cellHeight;
     private int m_score;
-    private Vibrator vibrator;
-    private boolean vibrate;
-    private boolean sound;
+
     TextView m_scoreview;
     ArrayList<Dot> m_dots;
     List<Point> m_dotPath;
@@ -51,7 +48,7 @@ public class Game extends View {
         /**Initializing*/
         super(context, attributeSet);
         m_sp = PreferenceManager.getDefaultSharedPreferences(getContext());
-        moving = false;
+        m_moving = false;
         m_rect = new Rect();
         m_paint = new Paint();
         m_path = new Path();
@@ -75,9 +72,9 @@ public class Game extends View {
 
 
 
-        vibrator = (Vibrator) context.getSystemService(Context.VIBRATOR_SERVICE);
-        vibrate = m_sp.getBoolean("vibrations", false);
-        sound = m_sp.getBoolean("sounds", false);
+        m_vibrator = (Vibrator) context.getSystemService(Context.VIBRATOR_SERVICE);
+        m_vibrate = m_sp.getBoolean("vibrations", false);
+        m_sound = m_sp.getBoolean("sounds", false);
 
     }
 
@@ -175,11 +172,11 @@ public class Game extends View {
         if (event.getAction() == MotionEvent.ACTION_DOWN) {
             m_dotPath.add(new Point(squareX, squareY));
             m_paintPath.setColor(current.color);
-            moving = true;
+            m_moving = true;
             animations.clear();
             animatorSet = new AnimatorSet();
         }
-        else if (event.getAction() == MotionEvent.ACTION_MOVE && moving) {
+        else if (event.getAction() == MotionEvent.ACTION_MOVE && m_moving) {
             Point currentPoint = new Point(squareX, squareY);
             if(!m_dotPath.contains(currentPoint)) {
                 Point lastPoint = m_dotPath.get(m_dotPath.size() - 1);
@@ -203,19 +200,17 @@ public class Game extends View {
         else if (event.getAction() == MotionEvent.ACTION_UP) {
             if(m_dotPath.size() > 1) {
                 moveDots();
-                if(vibrate)
-                {
+                if(m_vibrate) {
                     System.out.println("Vibrate bzzzz");
-                    //vibrator.vibrate(500);
+                    //m_vibrator.vibrate(500);
                 }
-                if(sound)
-                {
+                if(m_sound) {
                     System.out.println("Sound beepboop");
                     //here we play sound
                 }
             }
             m_dotPath.clear();
-            moving = false;
+            m_moving = false;
             invalidate();
         }
         return true;
