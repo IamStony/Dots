@@ -5,4 +5,7 @@
     <string name="settings_vibration">Vibrations</string>
     <string name="settings_gridSize">Grid Size</string>
     <string name="game_sounds">Sound</string>
+    <string name="init_score">Score: 0</string>
+    <string name="init_moves">Moves: 30</string>
+
 </resources>
