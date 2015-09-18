@@ -158,7 +158,7 @@ public class Game extends View {
         }
 
         /**Draw the dots*/
-        for(int i = 0; i < m_dots.size(); i++) {
+        for(int i = m_dots.size() - 1; i >= 0; i--) {
             Dot current = m_dots.get(i);
             canvas.drawOval(current.circle, current.dotPaint);
         }
@@ -203,13 +203,10 @@ public class Game extends View {
 
         }
         else if (event.getAction() == MotionEvent.ACTION_UP) {
-            if(m_sound)
-            {
-                m_mp.seekTo(0);
-            }
             if(m_dotPath.size() > 1) {
                 setScore(m_dotPath.size());
                 moveDots();
+                //m_mp.stop();
                 feedback();
             }
             m_dotPath.clear();
@@ -226,6 +223,7 @@ public class Game extends View {
         if(m_sound) {
             System.out.println("Sound beepboop");
             //here we play sound
+            m_mp.seekTo(0);
             m_mp.start();
         }
     }
