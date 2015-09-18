@@ -1,7 +1,14 @@
 package game.dots;
 
-/**
- * Created by kristinn on 18/09/15.
- */
-public class Highscore {
+public class HighScore {
+    public String _name;
+    public int  _score;
+
+    public HighScore(){}
+
+    public HighScore(String name, int score){
+        this._name = name;
+        this._score = score;
+    }
+
 }

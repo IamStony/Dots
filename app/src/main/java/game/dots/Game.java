@@ -49,7 +49,7 @@ public class Game extends View {
     ArrayList<Dot> m_dots;
     List<Point> m_dotPath;
     SharedPreferences m_sp;
-    DatabaseHandler m_db;// = new DatabaseHandler(this);
+    DatabaseHandler m_db;
 
     private MediaPlayer m_mp;
 
@@ -242,7 +242,8 @@ public class Game extends View {
         m_movesView = (TextView) v.findViewById(R.id.moves);
         if(m_moves <= 0)
         {
-            MainMenuActivity.add_score("Kristinn" , m_score);
+            HighScore score = new HighScore("Steinar", m_score);
+            m_db.addScore(score);
             m_score = 0;
             m_moves = 10;
         }
