@@ -22,6 +22,8 @@ import android.view.View;
 import android.view.animation.AccelerateDecelerateInterpolator;
 import android.widget.TextView;
 
+import org.w3c.dom.Text;
+
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Comparator;
@@ -40,8 +42,10 @@ public class Game extends View {
 
     private int NUM_CELLS, m_cellWidth, m_cellHeight;
     private int m_score;
+    private int m_moves;
 
     TextView m_scoreView;
+    TextView m_movesView;
     ArrayList<Dot> m_dots;
     List<Point> m_dotPath;
     SharedPreferences m_sp;
@@ -81,8 +85,9 @@ public class Game extends View {
         m_vibrator = (Vibrator) context.getSystemService(Context.VIBRATOR_SERVICE);
 
         m_sound = m_sp.getBoolean("sounds", false);
-        m_mp = MediaPlayer.create(getContext(),R.raw.pop);
+        m_mp = MediaPlayer.create(getContext(), R.raw.pop);
         m_score = 0;
+        m_moves = 10;
 
     }
 
@@ -233,6 +238,15 @@ public class Game extends View {
         m_scoreView = (TextView) v.findViewById(R.id.score);
         m_score += i;
         m_scoreView.setText("Score: " + Integer.toString(m_score));
+        m_moves --;
+        m_movesView = (TextView) v.findViewById(R.id.moves);
+        if(m_moves <= 0)
+        {
+            MainMenuActivity.add_score("Kristinn" , m_score);
+            m_score = 0;
+            m_moves = 10;
+        }
+        m_movesView.setText("Moves: " + Integer.toString(m_moves));
     }
 
 
