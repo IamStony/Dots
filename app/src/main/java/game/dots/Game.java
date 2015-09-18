@@ -261,7 +261,7 @@ public class Game extends View {
             }
             if(!m_user.isEmpty())
             {
-                input.setText(m_user.toString());
+                input.setText(m_user);
             }
             AlertDialog.Builder builder = new AlertDialog.Builder(this.getContext());
             builder.setTitle("Your Score: " + Integer.toString(m_score));
@@ -274,7 +274,7 @@ public class Game extends View {
                         m_user = m_user.substring(0, 20);
                     }
                     //System.out.println("Your score is ;;; " + Integer.toString(m_finalScore));
-                    HighScore score = new HighScore(m_user.toString(), m_finalScore);
+                    HighScore score = new HighScore(m_user, m_finalScore);
                     m_db.addScore(score);
                 }
             });
