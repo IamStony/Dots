@@ -48,10 +48,12 @@ public class DatabaseHandler extends SQLiteOpenHelper {
         db.close();
     }
 
-    public List<HighScore> getAllScores() {
-        List<HighScore> scoreList = new ArrayList<>();
+    public ArrayList<HighScore> getAllScores() {
+        ArrayList<HighScore> scoreList = new ArrayList<>();
 
-        String selectQuery = "SELECT * FROM " + TABLE_HIGHSCORES;
+        String selectQuery = "SELECT * FROM " + TABLE_HIGHSCORES +
+                                " ORDER BY " + SCORE +
+                                " DESC LIMIT 10";
 
         SQLiteDatabase db = this.getWritableDatabase();
         Cursor cursor = db.rawQuery(selectQuery, null);
@@ -64,6 +66,8 @@ public class DatabaseHandler extends SQLiteOpenHelper {
                 scoreList.add(score);
             } while(cursor.moveToNext());
         }
+
+        cursor.close();
 
         return scoreList;
     }
