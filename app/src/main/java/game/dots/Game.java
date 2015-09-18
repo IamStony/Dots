@@ -348,8 +348,6 @@ public class Game extends View {
             temp = new Dot(currentDot.x, currentDot.y - 1);
             temp.circle.offsetTo(remember.circle.left, currentDot.circle.top - m_cellHeight);
             animateMove(temp, currentDot);
-
-            //temp.circle.offsetTo(remember.circle.left, currentDot.circle.top);
         }
         lastDot = currentDot;
 
@@ -358,9 +356,7 @@ public class Game extends View {
         animatorSet.start();
         animatorSet.addListener(new Animator.AnimatorListener() {
             @Override
-            public void onAnimationStart(Animator animator) {
-                System.out.println("Starting animation");
-            }
+            public void onAnimationStart(Animator animator) {}
 
             @Override
             public void onAnimationEnd(Animator animation) {
@@ -370,14 +366,10 @@ public class Game extends View {
             }
 
             @Override
-            public void onAnimationCancel(Animator animator) {
-                //skip
-            }
+            public void onAnimationCancel(Animator animator) {}
 
             @Override
-            public void onAnimationRepeat(Animator animator) {
-                System.out.println("Repeating animation");
-            }
+            public void onAnimationRepeat(Animator animator) {}
         });
     }
 
