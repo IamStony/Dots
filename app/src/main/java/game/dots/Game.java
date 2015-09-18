@@ -253,7 +253,7 @@ public class Game extends View {
             m_finalScore = m_score;
             final EditText input = new EditText(this.getContext());
             input.setInputType(InputType.TYPE_CLASS_TEXT);
-            input.setHint("Your Name / Max 20 characters");
+            input.setHint("Your Name");
             input.setHintTextColor(Color.RED);
             if(m_vibrate)
             {
@@ -270,11 +270,10 @@ public class Game extends View {
                 @Override
                 public void onClick(DialogInterface dialog, int which) {
                     m_user = input.getText().toString();
-                    if(m_user.length() > 20)
-                    {
-                        m_user = m_user.substring(0,20);
+                    if (m_user.length() > 20) {
+                        m_user = m_user.substring(0, 20);
                     }
-                    System.out.println("Your score is ;;; " + Integer.toString(m_finalScore));
+                    //System.out.println("Your score is ;;; " + Integer.toString(m_finalScore));
                     HighScore score = new HighScore(m_user.toString(), m_finalScore);
                     m_db.addScore(score);
                 }
@@ -288,7 +287,10 @@ public class Game extends View {
             builder.show();
             m_score = 0;
             m_moves = 10;
+            m_dots.clear();
+            createDots();
         }
+        m_scoreView.setText("Score: " + Integer.toString(m_score));
         m_movesView.setText("Moves: " + Integer.toString(m_moves));
     }
 
