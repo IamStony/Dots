@@ -13,6 +13,7 @@ public class PlayActivity extends Activity {
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+
         //playfile = MediaPlayer.create(this, R.raw.filename);
         setContentView(R.layout.activity_play);
     }

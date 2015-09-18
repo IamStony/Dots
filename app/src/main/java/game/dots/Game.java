@@ -45,6 +45,7 @@ public class Game extends View {
     ArrayList<Dot> m_dots;
     List<Point> m_dotPath;
     SharedPreferences m_sp;
+    DatabaseHandler m_db;// = new DatabaseHandler(this);
 
     private MediaPlayer m_mp;
 
@@ -52,6 +53,8 @@ public class Game extends View {
         /**Initializing*/
         super(context, attributeSet);
         m_sp = PreferenceManager.getDefaultSharedPreferences(getContext());
+        m_db = new DatabaseHandler(context);
+        
         m_moving = false;
         m_rect = new Rect();
         m_paint = new Paint();
@@ -206,7 +209,6 @@ public class Game extends View {
             if(m_dotPath.size() > 1) {
                 setScore(m_dotPath.size());
                 moveDots();
-                //m_mp.stop();
                 feedback();
             }
             m_dotPath.clear();
@@ -221,8 +223,6 @@ public class Game extends View {
             m_vibrator.vibrate(200);
         }
         if(m_sound) {
-            System.out.println("Sound beepboop");
-            //here we play sound
             m_mp.seekTo(0);
             m_mp.start();
         }
