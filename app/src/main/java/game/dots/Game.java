@@ -154,7 +154,7 @@ public class Game extends View {
         }
 
         /**Draw the connection*/
-        if(!m_dotPath.isEmpty()) {
+        if(!m_dotPath.isEmpty() && m_moving) {
             m_path.reset();
             Point point = m_dotPath.get(0);
             m_path.moveTo( (point.x * m_cellWidth) + m_cellWidth / 2, (point.y * m_cellHeight) + m_cellHeight / 2 );
@@ -191,7 +191,37 @@ public class Game extends View {
         }
         else if (event.getAction() == MotionEvent.ACTION_MOVE && m_moving) {
             Point currentPoint = new Point(squareX, squareY);
-            if(!m_dotPath.contains(currentPoint)) {
+
+            //Backwards or Circle
+            if(m_dotPath.size() > 1 && m_dotPath.contains(currentPoint)) {
+                Point secondLast = m_dotPath.get(m_dotPath.size() - 2);
+                //Going Backwards
+                if(secondLast.equals(currentPoint)) {
+                    m_dotPath.remove(m_dotPath.size() - 1);
+                    invalidate();
+                }
+                //If we connect into a circle all dots of that color
+                //will automatically be removed from the board and the
+                //user wont be able to do anything more until he
+                //presses down again
+                else if(!m_dotPath.get(m_dotPath.size()-1).equals(currentPoint)) {
+                    m_moving = false;
+                    m_dotPath.clear();
+                    for (int i = 0; i < m_dots.size(); i++) {
+                        Dot currentDot = m_dots.get(i);
+                        currentPoint = new Point(currentDot.x, currentDot.y);
+                        if (current.color == currentDot.color) {
+                            m_dotPath.add(currentPoint);
+                        }
+                    }
+                    setScore(m_dotPath.size());
+                    moveDots();
+                    feedback();
+                    m_dotPath.clear();
+                }
+            }
+            //Adding dot
+            else if(!m_dotPath.contains(currentPoint)) {
                 Point lastPoint = m_dotPath.get(m_dotPath.size() - 1);
                 Dot lastDot = getDot(lastPoint.x, lastPoint.y);
                 if(current.color == lastDot.color) {
@@ -201,16 +231,8 @@ public class Game extends View {
                     }
                 }
             }
-            else if(m_dotPath.size() > 1) {
-                Point secondLast = m_dotPath.get(m_dotPath.size() - 2);
-                if(secondLast.equals(currentPoint)) {
-                    m_dotPath.remove(m_dotPath.size() - 1);
-                    invalidate();
-                }
-            }
-
         }
-        else if (event.getAction() == MotionEvent.ACTION_UP) {
+        else if (event.getAction() == MotionEvent.ACTION_UP && m_moving) {
             if(m_dotPath.size() > 1) {
                 setScore(m_dotPath.size());
                 moveDots();
@@ -225,7 +247,7 @@ public class Game extends View {
 
     public void feedback() {
         if(m_vibrate) {
-            m_vibrator.vibrate(200);
+            m_vibrator.vibrate(100);
         }
         if(m_sound) {
             m_mp.seekTo(0);
