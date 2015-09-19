@@ -30,6 +30,8 @@ import java.util.LinkedList;
 import java.util.List;
 
 public class Game extends View {
+
+    //region Declaring variables
     private boolean m_moving;
     private boolean m_vibrate;
     private boolean m_sound;
@@ -50,9 +52,13 @@ public class Game extends View {
     ArrayList<Dot> m_dots;
     List<Point> m_dotPath;
     SharedPreferences m_sp;
+    MediaPlayer m_mp;
 
-    private MediaPlayer m_mp;
+    static List<Animator> animations;
+    static AnimatorSet animatorSet;
+    //endregion
 
+    //region Constructor, initializing variables
     public Game(Context context, AttributeSet attributeSet) {
         /**Initializing*/
         super(context, attributeSet);
@@ -89,8 +95,10 @@ public class Game extends View {
         m_score = 0;
         m_moves = 10;
 
-
+        animations = new LinkedList<>();
+        animatorSet = new AnimatorSet();
     }
+    //endregion
 
     private void createDots() {
         for(int row = 0; row < NUM_CELLS; ++row) {
@@ -119,6 +127,7 @@ public class Game extends View {
         return m_dots.get((NUM_CELLS * squareY) + squareX);
     }
 
+    //region Overrides for measuring the screen
     @Override
     protected void onMeasure( int widthMeasureSpec, int heightMeasureSpec ) {
         super.onMeasure(widthMeasureSpec, heightMeasureSpec);
@@ -136,7 +145,9 @@ public class Game extends View {
         m_cellWidth = boardWidth / NUM_CELLS;
         m_cellHeight = boardHeight / NUM_CELLS;
     }
+    //endregion
 
+    //region Drawing on the canvas
     @Override
     protected void onDraw(Canvas canvas) {
         super.onDraw(canvas);
@@ -172,6 +183,7 @@ public class Game extends View {
             canvas.drawOval(current.circle, current.dotPaint);
         }
     }
+    //endregion
 
     @Override
     public boolean onTouchEvent(@NonNull MotionEvent event) {
@@ -183,6 +195,7 @@ public class Game extends View {
         //System.out.println("Y: " + y + "     ->     Y: " + squareY);
         Dot current = getDot(squareX, squareY);
 
+        //region Touch - DOWN
         if (event.getAction() == MotionEvent.ACTION_DOWN) {
             m_dotPath.add(new Point(squareX, squareY));
             m_paintPath.setColor(current.color);
@@ -190,21 +203,24 @@ public class Game extends View {
             animations.clear();
             animatorSet = new AnimatorSet();
         }
+        //endregion
+
+        //region Touch - MOVE
         else if (event.getAction() == MotionEvent.ACTION_MOVE && m_moving) {
             Point currentPoint = new Point(squareX, squareY);
 
-            //Backwards or Circle
+            //region Backwards or Circle
             if(m_dotPath.size() > 1 && m_dotPath.contains(currentPoint)) {
                 Point secondLast = m_dotPath.get(m_dotPath.size() - 2);
-                //Going Backwards
+
+                //region Going Backwards
                 if(secondLast.equals(currentPoint)) {
                     m_dotPath.remove(m_dotPath.size() - 1);
                     invalidate();
                 }
-                //If we connect into a circle all dots of that color
-                //will automatically be removed from the board and the
-                //user wont be able to do anything more until he
-                //presses down again
+                //endregion
+
+                //region Connecting a circle
                 else if(!m_dotPath.get(m_dotPath.size()-1).equals(currentPoint)) {
                     m_moving = false;
                     m_dotPath.clear();
@@ -220,8 +236,12 @@ public class Game extends View {
                     feedback();
                     m_dotPath.clear();
                 }
+                //endregion
+
             }
-            //Adding dot
+            //endregion
+
+            //region Adding dot
             else if(!m_dotPath.contains(currentPoint)) {
                 Point lastPoint = m_dotPath.get(m_dotPath.size() - 1);
                 Dot lastDot = getDot(lastPoint.x, lastPoint.y);
@@ -232,7 +252,12 @@ public class Game extends View {
                     }
                 }
             }
+            //endregion
+
         }
+        //endregion
+
+        //region Touch - UP
         else if (event.getAction() == MotionEvent.ACTION_UP && m_moving) {
             if(m_dotPath.size() > 1) {
                 setScore(m_dotPath.size());
@@ -243,6 +268,8 @@ public class Game extends View {
             m_moving = false;
             invalidate();
         }
+        //endregion
+
         return true;
     }
 
@@ -263,8 +290,7 @@ public class Game extends View {
         m_scoreView.setText("Score: " + Integer.toString(m_score));
         m_moves --;
         m_movesView = (TextView) v.findViewById(R.id.moves);
-        if(m_moves <= 0)
-        {
+        if(m_moves <= 0) {
             Popup p = new Popup(this.getContext(), m_score,m_grid);
             m_score = 0;
             m_moves = 10;
@@ -274,7 +300,6 @@ public class Game extends View {
         m_scoreView.setText("Score: " + Integer.toString(m_score));
         m_movesView.setText("Moves: " + Integer.toString(m_moves));
     }
-
 
     private void moveDots() {
         Point currentPoint;
@@ -332,11 +357,6 @@ public class Game extends View {
             public void onAnimationRepeat(Animator animator) {}
         });
     }
-
-    static List<Animator> animations = new LinkedList<>();
-
-    static AnimatorSet animatorSet = new AnimatorSet();
-
 
     public void animateMove(final Dot from, final Dot to) {
 

@@ -13,20 +13,16 @@ public class MyPreferencesActivity extends PreferenceActivity {
         getFragmentManager().beginTransaction().replace(android.R.id.content, new MyPreferenceFragment()).commit();
     }
 
-    public static class MyPreferenceFragment extends PreferenceFragment
-    {
+    public static class MyPreferenceFragment extends PreferenceFragment {
         @Override
-        public void onCreate(final Bundle savedInstanceState)
-        {
+        public void onCreate(final Bundle savedInstanceState) {
             super.onCreate(savedInstanceState);
             addPreferencesFromResource(R.xml.game_preferences);
         }
     }
 
-    protected void clearDatabase()
-    {
+    protected void clearDatabase() {
         DatabaseHandler db = new DatabaseHandler(this.getApplicationContext());
         db.clearDB();
-
     }
 }

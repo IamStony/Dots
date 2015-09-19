@@ -4,9 +4,6 @@ import android.content.Context;
 import android.preference.DialogPreference;
 import android.util.AttributeSet;
 
-/**
- * Created by kristinn on 19/09/15.
- */
 public class ResetDialog extends DialogPreference {
 
     public ResetDialog(Context context, AttributeSet attrs) {
@@ -15,8 +12,7 @@ public class ResetDialog extends DialogPreference {
     @Override
     protected void onDialogClosed(boolean positiveResult) {
         super.onDialogClosed(positiveResult);
-        if(positiveResult)
-        {
+        if(positiveResult) {
             DatabaseHandler db = new DatabaseHandler(getContext());
             db.clearDB();
         }

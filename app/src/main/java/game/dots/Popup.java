@@ -8,8 +8,7 @@ import android.text.InputType;
 import android.widget.EditText;
 
 public class Popup {
-    public Popup(Context context, final int score, final String grid)
-    {
+    public Popup(Context context, final int score, final String grid) {
         final DatabaseHandler m_db = new DatabaseHandler(context);
         final EditText input = new EditText(context);
         input.setInputType(InputType.TYPE_CLASS_TEXT);
@@ -38,6 +37,5 @@ public class Popup {
             }
         });
         builder.show();
-
     }
 }
