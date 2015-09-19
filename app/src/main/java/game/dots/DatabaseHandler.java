@@ -73,4 +73,10 @@ public class DatabaseHandler extends SQLiteOpenHelper {
 
         return scoreList;
     }
+
+    public void clearDB()
+    {
+        SQLiteDatabase db = this.getWritableDatabase();
+        db.execSQL("delete from " + TABLE_HIGHSCORES);
+    }
 }
