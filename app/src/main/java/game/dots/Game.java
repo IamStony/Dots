@@ -35,6 +35,7 @@ public class Game extends View {
     private boolean m_moving;
     private boolean m_vibrate;
     private boolean m_sound;
+    private boolean m_gameOver;
     private Rect m_rect;
     private Paint m_paint;
     private Path m_path;
@@ -94,6 +95,8 @@ public class Game extends View {
         m_mp = MediaPlayer.create(getContext(), R.raw.pop);
         m_score = 0;
         m_moves = 10;
+
+        m_gameOver = false;
 
         animations = new LinkedList<>();
         animatorSet = new AnimatorSet();
@@ -160,6 +163,11 @@ public class Game extends View {
 
     @Override
     public boolean onTouchEvent(@NonNull MotionEvent event) {
+        if(m_gameOver) {
+            setScore(0);
+            return true;
+        }
+
         int x = (int) event.getX();
         int y = (int) event.getY();
         int squareX = squareN(x);
@@ -263,7 +271,7 @@ public class Game extends View {
         m_scoreView.setText("Score: " + Integer.toString(m_score));
         m_moves --;
         m_movesView = (TextView) v.findViewById(R.id.moves);
-        if(m_moves <= 0) {
+        if(m_moves <= 0 || m_gameOver) {
             Popup p = new Popup(this.getContext(), m_score,m_grid);
             m_score = 0;
             m_moves = 10;
@@ -321,6 +329,7 @@ public class Game extends View {
             public void onAnimationEnd(Animator animation) {
                 assert lastDot != null;
                 lastDot.changeColor();
+                m_gameOver = gameOver();
             }
 
             @Override
@@ -368,6 +377,36 @@ public class Game extends View {
         animations.add(animator);
     }
 
+    private boolean gameOver() {
+        for(int i = 0; i < m_dots.size(); i++) {
+            Dot current = m_dots.get(i);
+            int x = current.x;
+            int y = current.y;
+            System.out.println("CurrentDot: (" + x + "," + y + ") Color: " + current.color);
+            if((x+1) < NUM_CELLS) {
+                Dot current2 = getDot(x+1, y);
+                System.out.println("Neighbour: (" + current2.x + "," + current2.y + ") Color: " + current2.color);
+                if(current.color == getDot(x+1, y).color) { return false; }
+            }
+            if((y+1) < NUM_CELLS) {
+                Dot current2 = getDot(x, y+1);
+                System.out.println("Neighbour: (" + current2.x + "," + current2.y + ") Color: " + current2.color);
+                if(current.color == getDot(x, y+1).color) { return false; }
+            }
+            if((x-1) >= 0) {
+                Dot current2 = getDot(x-1, y);
+                System.out.println("Neighbour: (" + current2.x + "," + current2.y + ") Color: " + current2.color);
+                if(current.color == getDot(x-1, y).color) { return false; }
+            }
+            if((y-1) >= 0) {
+                Dot current2 = getDot(x, y-1);
+                System.out.println("Neighbour: (" + current2.x + "," + current2.y + ") Color: " + current2.color);
+                if(current.color == getDot(x, y-1).color) { return false; }
+            }
+        }
+        return true;
+    }
+
     private void createDots() {
         for(int row = 0; row < NUM_CELLS; ++row) {
             for(int col = 0; col < NUM_CELLS; ++col) {
@@ -382,6 +421,7 @@ public class Game extends View {
                 m_dots.add(dot);
             }
         }
+        m_gameOver = false;
     }
 
     private int squareN(int n) { //Virkar fyrir bæði x og y hnit
