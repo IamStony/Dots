@@ -172,8 +172,7 @@ public class Game extends View {
         int y = (int) event.getY();
         int squareX = squareN(x);
         int squareY = squareN(y);
-        //System.out.println("X: " + x + "     ->     X: " + squareX);
-        //System.out.println("Y: " + y + "     ->     Y: " + squareY);
+
         Dot current = getDot(squareX, squareY);
 
         //region Touch - DOWN
@@ -382,25 +381,21 @@ public class Game extends View {
             Dot current = m_dots.get(i);
             int x = current.x;
             int y = current.y;
-            System.out.println("CurrentDot: (" + x + "," + y + ") Color: " + current.color);
+
             if((x+1) < NUM_CELLS) {
                 Dot current2 = getDot(x+1, y);
-                System.out.println("Neighbour: (" + current2.x + "," + current2.y + ") Color: " + current2.color);
                 if(current.color == getDot(x+1, y).color) { return false; }
             }
             if((y+1) < NUM_CELLS) {
                 Dot current2 = getDot(x, y+1);
-                System.out.println("Neighbour: (" + current2.x + "," + current2.y + ") Color: " + current2.color);
                 if(current.color == getDot(x, y+1).color) { return false; }
             }
             if((x-1) >= 0) {
                 Dot current2 = getDot(x-1, y);
-                System.out.println("Neighbour: (" + current2.x + "," + current2.y + ") Color: " + current2.color);
                 if(current.color == getDot(x-1, y).color) { return false; }
             }
             if((y-1) >= 0) {
                 Dot current2 = getDot(x, y-1);
-                System.out.println("Neighbour: (" + current2.x + "," + current2.y + ") Color: " + current2.color);
                 if(current.color == getDot(x, y-1).color) { return false; }
             }
         }
@@ -424,7 +419,7 @@ public class Game extends View {
         m_gameOver = false;
     }
 
-    private int squareN(int n) { //Virkar fyrir bæði x og y hnit
+    private int squareN(int n) {
         int square = n / m_cellHeight; //m_cellHeight == m_cellWidth
         if(square < 0) square = 0;
         if(square >= NUM_CELLS - 1) square = NUM_CELLS - 1;
