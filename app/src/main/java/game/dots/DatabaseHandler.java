@@ -11,7 +11,7 @@ import java.util.ArrayList;
 public class DatabaseHandler extends SQLiteOpenHelper {
     private static final int DB_VERSION = 1;
     private static final String DB_NAME = "HighScoresManager";
-    private static final String TABLE_HIGHSCORES = "HighScoresV2";
+    private static final String TABLE_HIGHSCORES = "HighScores";
 
     private static final String NAME = "name";
     private static final String SCORE = "score";

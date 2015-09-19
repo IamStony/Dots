@@ -100,33 +100,6 @@ public class Game extends View {
     }
     //endregion
 
-    private void createDots() {
-        for(int row = 0; row < NUM_CELLS; ++row) {
-            for(int col = 0; col < NUM_CELLS; ++col) {
-                int x = col * m_cellWidth;
-                int y = row * m_cellHeight;
-                Dot dot = new Dot(x / m_cellWidth, y / m_cellHeight);
-                dot.circle.set(x, y, m_cellWidth + x, m_cellHeight + y);
-                dot.circle.offset(getPaddingLeft(), getPaddingTop());
-                dot.circle.inset(m_cellWidth * 0.2f, m_cellHeight * 0.2f);
-                dot.cX = x;
-                dot.cY = y;
-                m_dots.add(dot);
-            }
-        }
-    }
-
-    private int squareN(int n) { //Virkar fyrir bæði x og y hnit
-        int square = n / m_cellHeight; //m_cellHeight == m_cellWidth
-        if(square < 0) square = 0;
-        if(square >= NUM_CELLS - 1) square = NUM_CELLS - 1;
-        return square;
-    }
-
-    private Dot getDot(int squareX, int squareY) {
-        return m_dots.get((NUM_CELLS * squareY) + squareX);
-    }
-
     //region Overrides for measuring the screen
     @Override
     protected void onMeasure( int widthMeasureSpec, int heightMeasureSpec ) {
@@ -393,6 +366,33 @@ public class Game extends View {
             }
         });
         animations.add(animator);
+    }
+
+    private void createDots() {
+        for(int row = 0; row < NUM_CELLS; ++row) {
+            for(int col = 0; col < NUM_CELLS; ++col) {
+                int x = col * m_cellWidth;
+                int y = row * m_cellHeight;
+                Dot dot = new Dot(x / m_cellWidth, y / m_cellHeight);
+                dot.circle.set(x, y, m_cellWidth + x, m_cellHeight + y);
+                dot.circle.offset(getPaddingLeft(), getPaddingTop());
+                dot.circle.inset(m_cellWidth * 0.2f, m_cellHeight * 0.2f);
+                dot.cX = x;
+                dot.cY = y;
+                m_dots.add(dot);
+            }
+        }
+    }
+
+    private int squareN(int n) { //Virkar fyrir bæði x og y hnit
+        int square = n / m_cellHeight; //m_cellHeight == m_cellWidth
+        if(square < 0) square = 0;
+        if(square >= NUM_CELLS - 1) square = NUM_CELLS - 1;
+        return square;
+    }
+
+    private Dot getDot(int squareX, int squareY) {
+        return m_dots.get((NUM_CELLS * squareY) + squareX);
     }
 
 }
