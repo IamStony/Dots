@@ -7,15 +7,15 @@ import android.database.sqlite.SQLiteDatabase;
 import android.database.sqlite.SQLiteOpenHelper;
 
 import java.util.ArrayList;
-import java.util.List;
 
 public class DatabaseHandler extends SQLiteOpenHelper {
     private static final int DB_VERSION = 1;
     private static final String DB_NAME = "HighScoresManager";
-    private static final String TABLE_HIGHSCORES = "HighScores";
+    private static final String TABLE_HIGHSCORES = "HighScoresV2";
 
     private static final String NAME = "name";
     private static final String SCORE = "score";
+    private static final String GRID = "grid";
 
     public DatabaseHandler(Context context) {
         super(context, DB_NAME, null, DB_VERSION);
@@ -24,7 +24,7 @@ public class DatabaseHandler extends SQLiteOpenHelper {
     @Override
     public void onCreate(SQLiteDatabase db) {
         String CREATE_HIGHSCORE_TABLE = "CREATE TABLE " + TABLE_HIGHSCORES + "(" +
-                                        NAME + " TEXT, " + SCORE + " INTEGER)";
+                                        NAME + " TEXT, " + SCORE + " INTEGER, " + GRID + " TEXT)";
         db.execSQL(CREATE_HIGHSCORE_TABLE);
     }
 
@@ -43,16 +43,18 @@ public class DatabaseHandler extends SQLiteOpenHelper {
         ContentValues values = new ContentValues();
         values.put(NAME, score._name);
         values.put(SCORE, score._score);
+        values.put(GRID, score._grid);
 
         db.insert(TABLE_HIGHSCORES, null, values);
         db.close();
     }
 
-    public ArrayList<HighScore> getAllScores() {
+    public ArrayList<HighScore> getAllScores(String grid) {
         ArrayList<HighScore> scoreList = new ArrayList<>();
 
         String selectQuery = "SELECT * FROM " + TABLE_HIGHSCORES +
-                                " ORDER BY " + SCORE +
+                                " WHERE " + GRID + "='" + grid +
+                                "' ORDER BY " + SCORE +
                                 " DESC LIMIT 10";
 
         SQLiteDatabase db = this.getWritableDatabase();

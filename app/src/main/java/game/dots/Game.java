@@ -43,6 +43,8 @@ public class Game extends View {
     private int m_score;
     private int m_moves;
 
+    private String m_grid;
+
     TextView m_scoreView;
     TextView m_movesView;
     ArrayList<Dot> m_dots;
@@ -66,6 +68,7 @@ public class Game extends View {
 
         /**Getting values and configuring settings*/
         NUM_CELLS = Integer.parseInt(m_sp.getString("gridSize", "6"));
+        m_grid = NUM_CELLS + "x" + NUM_CELLS;
 
         m_paint.setColor(Color.WHITE);
         m_paint.setStyle(Paint.Style.STROKE);
@@ -262,7 +265,7 @@ public class Game extends View {
         m_movesView = (TextView) v.findViewById(R.id.moves);
         if(m_moves <= 0)
         {
-            Popup p = new Popup(this.getContext(), m_score);
+            Popup p = new Popup(this.getContext(), m_score,m_grid);
             m_score = 0;
             m_moves = 10;
             m_dots.clear();
@@ -318,7 +321,6 @@ public class Game extends View {
 
             @Override
             public void onAnimationEnd(Animator animation) {
-                System.out.println("hello");
                 assert lastDot != null;
                 lastDot.changeColor();
             }

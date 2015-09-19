@@ -8,7 +8,7 @@ import android.text.InputType;
 import android.widget.EditText;
 
 public class Popup {
-    public Popup(Context context, final int score)
+    public Popup(Context context, final int score, final String grid)
     {
         final DatabaseHandler m_db = new DatabaseHandler(context);
         final EditText input = new EditText(context);
@@ -27,7 +27,7 @@ public class Popup {
                     m_user = m_user.substring(0, 20);
                 }
                 //System.out.println("Your score is ;;; " + Integer.toString(m_finalScore));
-                HighScore hscore = new HighScore(m_user, score);
+                HighScore hscore = new HighScore(m_user, score, grid);
                 m_db.addScore(hscore);
             }
         });
