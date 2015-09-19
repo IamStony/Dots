@@ -11,7 +11,10 @@
 
         <activity
             android:name=".MainMenuActivity"
-            android:label="@string/game_name" >
+            android:label="@string/game_name"
+            android:configChanges="keyboardHidden|orientation"
+            android:screenOrientation="portrait"
+            >
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
                 <category android:name="android.intent.category.LAUNCHER" />
@@ -20,12 +23,17 @@
 
         <activity
             android:name=".PlayActivity"
-            android:configChanges="orientation|screenSize"
+            android:configChanges="keyboardHidden|orientation"
+            android:screenOrientation="portrait"
             android:label="@string/game_play"
             android:parentActivityName="game.dots.MainMenuActivity">
         </activity>
 
-        <activity android:name=".MyPreferencesActivity" />
+        <activity
+            android:name=".MyPreferencesActivity"
+            android:configChanges="keyboardHidden|orientation"
+            android:screenOrientation="portrait"
+            />
 
     </application>
 
