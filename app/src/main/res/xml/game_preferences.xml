@@ -1,5 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
 <PreferenceScreen xmlns:android="http://schemas.android.com/apk/res/android">
+    <PreferenceCategory
+    android:title="In Game Settings">
     <CheckBoxPreference
         android:title="@string/settings_vibration"
         android:defaultValue="false"
@@ -17,4 +19,12 @@
         android:defaultValue="6"
         android:entries="@array/gridArray"
         android:entryValues="@array/gridValues" />
+    </PreferenceCategory>
+    <game.dots.ResetDialog
+        android:key="@string/clear_highscore"
+        android:title="Clear The Highscore List"
+        android:positiveButtonText="OK"
+        android:negativeButtonText="Cancel"
+        />
+
 </PreferenceScreen>

@@ -1,6 +1,7 @@
 package game.dots;
 
 import android.os.Bundle;
+import android.preference.Preference;
 import android.preference.PreferenceActivity;
 import android.preference.PreferenceFragment;
 
@@ -22,4 +23,10 @@ public class MyPreferencesActivity extends PreferenceActivity {
         }
     }
 
+    protected void clearDatabase()
+    {
+        DatabaseHandler db = new DatabaseHandler(this.getApplicationContext());
+        db.clearDB();
+
+    }
 }
