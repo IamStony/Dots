@@ -1,14 +1,12 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
     <string-array name="gridArray">
-        <item>3x3</item>
         <item>6x6</item>
         <item>7x7</item>
         <item>8x8</item>
     </string-array>
 
     <string-array name="gridValues">
-        <item>3</item>
         <item>6</item>
         <item>7</item>
         <item>8</item>

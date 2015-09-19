@@ -94,7 +94,7 @@ public class Game extends View {
         m_sound = m_sp.getBoolean("sounds", false);
         m_mp = MediaPlayer.create(getContext(), R.raw.pop);
         m_score = 0;
-        m_moves = 10;
+        m_moves = 30;
 
         m_gameOver = false;
 
@@ -274,7 +274,7 @@ public class Game extends View {
         if(m_moves <= 0 || m_gameOver) {
             Popup p = new Popup(this.getContext(), m_score,m_grid);
             m_score = 0;
-            m_moves = 10;
+            m_moves = 30;
             m_dots.clear();
             createDots();
         }
