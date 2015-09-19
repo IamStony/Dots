@@ -19,7 +19,7 @@ public class MainMenuActivity extends Activity {
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
-        this.deleteDatabase("HighScoresManager");
+        //this.deleteDatabase("HighScoresManager"); //Using it clear the thingy
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main_menu);
 

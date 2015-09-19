@@ -11,7 +11,6 @@ public class ResetDialog extends DialogPreference {
 
     public ResetDialog(Context context, AttributeSet attrs) {
         super(context, attrs);
-        // TODO Auto-generated constructor stub
     }
     @Override
     protected void onDialogClosed(boolean positiveResult) {

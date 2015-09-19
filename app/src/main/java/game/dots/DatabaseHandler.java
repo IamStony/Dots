@@ -37,6 +37,10 @@ public class DatabaseHandler extends SQLiteOpenHelper {
         onCreate(db);
     }
 
+    /*TODO Væri hægt að tékka hvort að þetta score sé meira heldur en
+     *TODO minnsta scorið í viðkomandi grid og sleppa því að overcrowda
+     *TODO listann
+     */
     public void addScore(HighScore score) {
         SQLiteDatabase db = this.getWritableDatabase();
 
@@ -77,6 +81,6 @@ public class DatabaseHandler extends SQLiteOpenHelper {
     public void clearDB()
     {
         SQLiteDatabase db = this.getWritableDatabase();
-        db.execSQL("delete from " + TABLE_HIGHSCORES);
+        db.execSQL("DELETE FROM " + TABLE_HIGHSCORES);
     }
 }
